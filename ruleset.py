@@ -7,12 +7,15 @@ class Ruleset:
     def __init__(self):
         """ load the xml data """
         self.tree = ET.parse('custom-ruleset-of.parametrized.xml-file.xml')
-        self.root = self.tree.getroot()
-        self.list_of_coordinaterules = list(self.root.iter('coordinaterules'))
+        self.list_of_coordinaterules = self.tree.findall('.//coordinaterules')
 
     def get_list_of_subsets(self):
         """ returns a list containing the names of all subsets """
         return self.list_of_coordinaterules
+    
+    def get_list_of_liturgical_days(self,subset):
+        """ returns a list containing XML fragments of all liturgical days in a subset """
+        pass
         
 class Options:
     
