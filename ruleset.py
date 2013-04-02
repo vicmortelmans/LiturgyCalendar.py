@@ -14,64 +14,67 @@ class Ruleset:
         return self.list_of_coordinaterules
     
     def get_list_of_liturgical_days(self,subset):
-        """ returns a list containing XML fragments of all liturgical days in a subset """
-        pass
+        """ returns a list containing all liturgical days in a subset """
+        return self.tree.findall('.//liturgicalday[' + subset + ']')
+
+    def get_liturgical_days_as_dictionary(self):
+        """ returns a dictionary containing all liturgical days by coordinates """
+        dictionary = {}
+        for liturgical_day in self.tree.findall('.//liturgicalday'):
+            coordinates = liturgical_day.findtext('coordinates')
+            subset = liturgical_day.findtext('set')
+            liturgical_day_obj = Liturgical_day(coordinates,subset)
+            liturgical_day_obj.attributes = {
+                'name' : liturgical_day.findtext('name'),
+                'season' : liturgical_day.findtext('season'),
+                'rankname' : liturgical_day.findtext('rank'),
+                'rankvalue' : liturgical_day.find('rank').get('nr'),
+                'vigil' : liturgical_day.findtext('vigil'),
+                'precedence' : liturgical_day.findtext('precedence'),
+                'color' : liturgical_day.findtext('color')
+            }
+            liturgical_day_obj.daterules = liturgical_day.find('daterules')
+            # add to dictionary
+            dictionary[coordinates] = liturgical_day_obj
+        return dictionary
         
 class Options:
     
     language = "en"
-    form = "of"
     years = [2013,2014,2015,2016]
         
 class Calendar:
-    """ liturgical calendar for a series of liturgical years """
+    """ use a ruleset to compose the liturgical calendar for a series of liturgical years """
         
     def __init__(self,ruleset,options):
         self.ruleset = ruleset
         self.options = options
-        self.years = {}
+        self.liturgical_days = self.ruleset.get_liturgical_days_as_dictionary()
+        self.days = {}
         for year in self.options.years:
-            self.years[year] = Year(year,self)
+            for date in Library.all_days_of_liturgical_year(year):
+                self.days[date] = Day(date,year)
+                
 
     def populate(self):
-        for year in self.years.keys():
-            self.years[year].populate()
-
-class Year:
-    """ liturgical calendar for a single liturgical year """
-    
-    def __init__(self,year,calendar):
-        self.subsets = {}
-        for subset in calendar.ruleset.get_list_of_subsets():
-            self.subsets[subset] = Subset(year,subset)
-
-    def populate(self):
-        for subset in self.subsets.keys():
-            self.subsets[subset].populate()
-            
-class Subset:
-    """ liturgical calendar for a subset (e.g. Advent) """
-    
-    def __init__(self,year,subset):
-        start_date = Library.first_day_of_liturgical_year(year)
-        end_date_exclusive = Library.first_day_of_liturgical_year(year + 1)
-        day_count = (end_date_exclusive - start_date + timedelta(1)).days
-        self.days_by_date = {}
-        for i in range(0,day_count - 1):
-            date = start_date + timedelta(i)
-            self.days_by_date[date] = Day(date)
-    
-    def populate(self):
-        """ get a list of all liturgical days in the ruleset and for each
-            liturgical day evaluate the daterules and store the result
-            in the dictionaries days_by_date and days_by_coordinates """
         pass
+
+class Liturgical_day:
     
+    def __init__(self,coordinates,subset):
+        self.coordinates = ''
+        self.subset = ''
+        self.attributes = {}
+        self.daterules = None
+        self.days = {}
+        # TODO store data from XML record as attributes
+        
 class Day:
-    """ liturgical day """
     
-    def __init__(self,date):
+    def __init__(self,date,year):
+        self.liturgical_days = {}
         self.date = date
+        self.year = year
     
 class Library:
     
@@ -88,7 +91,15 @@ class Library:
         four_weeks = timedelta(4*7)
         first_sunday_of_advent = sunday_before_christmas - four_weeks
         return first_sunday_of_advent
-    
+
+    @staticmethod
+    def all_days_of_liturgical_year(year):
+        """ returns a list of all days as a date """
+        start = Library.first_day_of_liturgical_year(year)
+        end = Library.first_day_of_liturgical_year(year + 1)
+        count = (end - start).days
+        return [start + timedelta(days = x) for x in range(0,count)]
+        
 if __name__ == '__main__':
     ruleset = Ruleset()
     options = Options()
