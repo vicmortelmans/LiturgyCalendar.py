@@ -4,7 +4,7 @@ from datetime import timedelta
 
 class Ruleset:
 
-    def __init__(self):
+    def __init__(self): # TODO parametrize to accept filename
         """ load the xml data """
         self.tree = ET.parse('custom-ruleset-of.parametrized.xml-file.xml')
         self.list_of_coordinaterules = self.tree.findall('.//coordinaterules')
@@ -59,14 +59,19 @@ class Calendar:
                 self.days[date].set_calendar(self)
                 
     def populate(self):
+        """ populate the complete calendar """
         for year in self.options.years:
             self.populate_year(year)
             
     def populate_year(self,year):
+        """ populate all liturgical days for all subsets for a single year """
+        evaluate_daterules = Evaluate_daterules(year)
         for coordinates in self.liturgical_days.keys():
-            self.liturgical_days[coordinates].evaluate(year)
+            date = evaluate_daterules(self.liturgical_days[coordinates].daterules)
+            self.link(self.liturgical_days[coordinates], self.days[date])
 
     def link(self,liturgical_day,day):
+        """ create a mutual link between a liturgical_day and a day """
         coordinates = liturgical_day.coordinates
         subset = liturgical_day.subset
         date = day.date
@@ -86,10 +91,6 @@ class Liturgical_day:
 
     def set_calendar(self,calendar):
         self.calendar = calendar
-
-    def evaluate(year):
-        # date = evaluate daterules for this year
-        # self.calendar.link(self,self.calendar.days[date])
         
 class Day:
     
@@ -126,24 +127,43 @@ class Library:
         count = (end - start).days
         return [start + timedelta(days = x) for x in range(0,count)]
 
-    @staticmethod
-    def evaluate_daterules(daterules):
-        # TODO action = daterules.tagname()
-        # TODO return Library.rules[action](daterules)
+class Evaluate_daterules:
+    """ evaluation toolset to evaluate daterules in the context of a specific year """
+    
+    def __init__(self,year):
+        self.year = year
 
-    @staticmethod
-    def date(daterules):
-        # day = daterules.get('day')
-        # month = daterules.get('month')
-        # year = daterules.get('year')
-        # return Date(day,month,year)
+    def evaluate_daterules(self,daterules):
+        """ reads the element name and runs the according method """
+        action = daterules.tag
+        return self.rules[action](daterules)
+
+    def date(self,daterules):
+        day = daterules.get('day')
+        month = daterules.get('month')
+        previous_year = daterules.get('year-1')
+        year = self.year if previous_year != 'true' else self.year - 1
+        return date(year,month,day)
         
-    @staticmethod
-    def weekday_before(daterules):
+    def weekday_before(self,daterules):
+        inputrules = daterules.find('*')
+        date = self.evaluate_daterules(inputrules)
+        day = daterules.get('day')
+        # get the weekday index [0-6] of the date (r) and of the day (n)
+        # e.g. r is a Wednesday (3) and n is a Monday (1), so 2 days must be counted backwards
+        # e.g. r is a Wednesday (3) and n is a Saturday (6), so 4 days must be counted backwards
+        # e.g. r and n are both Mondays (1), so 7 days mus be counted backwards 
+        # in a simple formula, this is: (r-n-1) % 7 + 1
+        r = date.weekday()
+        count = (r - n - 1) % 7 + 1
         # inputrules = daterules.find('*')
         # inputdate = Library.evaluate_daterules(inputrules)
         # day = daterules.get('day')
         # calculate the output date and return
+
+    @staticmethod
+    def weekday():
+        pass
 
     rules = {
         "date" : Library.date,
