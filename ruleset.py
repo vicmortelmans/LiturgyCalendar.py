@@ -79,15 +79,17 @@ class Calendar:
             but this method takes care that
             - if the date has already been resolved, the daterules aren't evaluated again
             - no circular calls are made """
+        year = daterules_evaluator.year
         liturgical_day = self.liturgical_days[coordinates]
-        if liturgical_day.state == "evaluating":
-            raise NameError("Circular call of evaluate_daterules")
-        elif liturgical_day.state == "evaluated":
-            return liturgical_day.days[daterules_evaluator.year].date
+        if year in liturgical_day.state: 
+            if liturgical_day.state[year] == "evaluating":
+                raise NameError("Circular call of evaluate_daterules")
+            elif liturgical_day.state[year] == "evaluated":
+                return liturgical_day.days[year].date
         else:
-            liturgical_day.state = "evaluating"
+            liturgical_day.state[year] = "evaluating"
             date = daterules_evaluator.evaluate_daterules(liturgical_day.daterules)
-            liturgical_day.state = "evaluated"
+            liturgical_day.state[year] = "evaluated"
             self.link(liturgical_day, self.days[date])
             return date
 
@@ -112,7 +114,7 @@ class Liturgical_day:
         self.subset = subset
         self.attributes = {}
         self.daterules = None
-        self.state = '' # set and gotten by Calendar.evaluate_daterules exclusively
+        self.state = {} # set and gotten by Calendar.evaluate_daterules exclusively
         self.days = {} # references to days by year
 
     def set_calendar(self,calendar):
