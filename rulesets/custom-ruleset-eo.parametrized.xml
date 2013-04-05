@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<liturgicaldays rsversion="1">
+  <locale>en-us</locale>
+  <form>eo</form>
+  <includeliturgicaldays>liturgy.calendar.roman-rite.general.eo.ruleset.parametrized.xml</includeliturgicaldays>
+  <options>epiphany-alt,ascension-std,corpuschristi-std</options>
+  <!--liturgicalday>
+    <parameters>
+      <parametergroup><name>Optional Memorial of St. Damien de Veuster, priest</name><day>10</day><month>5</month></parametergroup>
+    </parameters>
+    <template>
+     <name>$name</name>
+      <season>Ordinary Time</season>
+      <set>Local dates</set>
+      <coordinates>0510</coordinates>
+      <rank nr="11">Optional Memorial</rank>
+      <precedence>8</precedence>
+      <daterules>
+        <date day="$day" month="$month"/>
+      </daterules>
+    </template>
+  </liturgicalday-->
+</liturgicaldays>

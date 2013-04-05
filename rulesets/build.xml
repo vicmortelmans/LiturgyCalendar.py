@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="rulesets">
+ <target name="all" depends="copy"/>
+ <target name="build">
+  <xslt style="liturgy.calendar.build-ruleset.xslt" destdir=".">
+   <mapper type="glob" from="custom-ruleset-*.parametrized.xml" to="custom-ruleset-*.xml"/>
+  </xslt>
+ </target> 
+ <target name="copy" depends="build">
+  <copy todir="..">
+   <fileset dir="." includes="custom-ruleset-??.xml"/>
+  </copy>
+ </target>
+ <target name="clean">
+  <delete>
+   <fileset dir="." includes="custom-ruleset-??.xml"/>
+  </delete>
+ </target>
+</project>

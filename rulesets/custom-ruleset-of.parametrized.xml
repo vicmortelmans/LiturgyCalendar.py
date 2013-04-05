@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<liturgicaldays rsversion="3">
+  <locale>en-us</locale>
+  <form>of</form>
+  <includeliturgicaldays>liturgy.calendar.roman-rite.general.of.ruleset.parametrized.xml</includeliturgicaldays>
+  <options>epiphany-alt,ascension-std,corpuschristi-std</options>
+</liturgicaldays>
