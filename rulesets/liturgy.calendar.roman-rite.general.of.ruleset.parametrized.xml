@@ -2,33 +2,10 @@
 
 
 <liturgicaldays>
-  <!-- after updating this file, increment the @version attribute in the 
-       custom ruleset files that include these <liturgicaldays>, if you
-       want to refresh the cache -->
 
   <!-- 
       ADVENT 
               -->
-
-  <!--coordinaterules set="Advent" start="First Sunday of Advent" stopbefore="Christmas"
-    start-date="11-27" stop-date="12-24" overlap-priority="5">
-    <text>A</text>
-    <format template="00">
-      <count-weeks-between>
-        <weeks-before nr="4">
-          <weekday-before day="Sunday">
-            <date day="25" month="12" year-1="yes"/>
-          </weekday-before>
-        </weeks-before>
-        <weekday-before-or-self day="Sunday">
-          <this-date/>
-        </weekday-before-or-self>
-      </count-weeks-between>
-    </format>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
 
   <liturgicalday>
     <parameters>
@@ -97,11 +74,6 @@
      CHRISTMAS OCTAVE
                       -->
 
-  <!--coordinaterules set="Christmas Octave" startafter="Christmas" stop="Seventh day in the octave of Christmas"
-    start-date="12-26" stop-date="12-31" overlap-priority="4">
-    <text>B</text>
-  </coordinaterules-->
-
   <liturgicalday>
     <parameters>
       <parametergroup><nr_s>Second</nr_s><nr_i>1</nr_i><nr_c>2</nr_c></parametergroup>
@@ -130,14 +102,6 @@
 <!-- 
      WEEKS OF CHRISTMAS SEASON
                                   -->
-
-  <!--coordinaterules set="Weekdays of Christmas Season" startafter="Solemnity of Mary" stopbefore="Epiphany of the Lord"
-    start-date="01-02" stop-date="01-07" overlap-priority="6">
-    <text>C</text>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
 
   <liturgicalday>
     <template>
@@ -186,25 +150,6 @@
      WEEKDAYS AFTER EPIPHANY
                              -->
 
-  <!--coordinaterules set="Weekdays after Epiphany" startafter="Epiphany of the Lord" stopbefore="Feast of the Baptism of the Lord"
-    start-date="01-03" stop-date="01-13" overlap-priority="3">
-    <text>E</text>
-    <day-number>
-      <this-date/>
-    </day-number>
-    <if>
-      <test>
-        <not-after>
-          <this-date/>
-          <relative-to name="Epiphany of the Lord"/>
-        </not-after>
-      </test>
-      <then>
-        <text>-</text>
-      </then>
-    </if>
-  </coordinaterules-->
-
   <liturgicalday>
     <parameters>
       <parametergroup><day_s>Monday</day_s><day_c>2</day_c></parametergroup>
@@ -234,21 +179,6 @@
      HOLY FAMILY 
                  -->
                  
-  <!--coordinaterules set="Holy Family"
-    start-date="12-26" stop-date="12-31" overlap-priority="0">
-    <if>
-      <test>
-        <equals>
-          <this-date/>
-          <relative-to name="Feast of the Holy Family"/>
-        </equals>
-      </test>
-      <then>
-        <text>HFA</text>
-      </then>
-    </if>
-  </coordinaterules-->
-
   <liturgicalday>
     <template>
      <name>Feast of the Holy Family</name>
@@ -282,21 +212,6 @@
      EPIPHANY
                  -->
                  
-  <!--coordinaterules set="Epiphany of the Lord" option="epiphany"
-    start-date="01-02" stop-date="01-08" overlap-priority="0">
-    <if>
-      <test>
-        <equals>
-          <this-date/>
-          <relative-to name="Epiphany of the Lord"/>
-        </equals>
-      </test>
-      <then>
-        <text>EPI</text>
-      </then>
-    </if>
-  </coordinaterules-->
-
   <liturgicalday>
     <template>
      <name>Epiphany of the Lord</name>
@@ -320,21 +235,6 @@
 <!-- 
      BAPTISM 
                                    -->
-
-  <!--coordinaterules set="Baptism"
-    start-date="01-07" stop-date="01-13" overlap-priority="0">
-    <if>
-      <test>
-        <equals>
-          <this-date/>
-          <relative-to name="Feast of the Baptism of the Lord"/>
-        </equals>
-      </test>
-      <then>
-        <text>BAP</text>
-      </then>
-    </if>
-  </coordinaterules-->
 
   <liturgicalday>
     <template>
@@ -375,24 +275,6 @@
 <!-- 
      LENT
           -->
-
-  <!--coordinaterules set="Lent" start="Ash Wednesday" stopbefore="Holy Thursday"
-    start-date="02-04" stop-date="04-21" overlap-priority="1">
-    <text>L</text>
-    <format template="00">
-      <count-weeks-between>
-        <days-before nr="49">
-          <easterdate/>
-        </days-before>
-        <weekday-before-or-self day="Sunday">
-          <this-date/>
-        </weekday-before-or-self>
-      </count-weeks-between>
-    </format>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
 
   <liturgicalday>
     <template>
@@ -534,24 +416,6 @@
   <!--
        EASTER 
               -->
-
-  <!--coordinaterules set="Easter" start="Holy Thursday" stop="Pentecost"
-    start-date="03-18" stop-date="06-12" overlap-priority="1">
-    <text>P</text>
-    <format template="00">
-      <count-weeks-between>
-        <weeks-before nr="1">
-          <easterdate/>
-        </weeks-before>
-        <weekday-before-or-self day="Sunday">
-          <this-date/>
-        </weekday-before-or-self>
-      </count-weeks-between>
-    </format>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
 
   <liturgicalday>
     <template>
@@ -711,11 +575,6 @@
        SPECIAL DAYS AFTER EASTER
                                  -->
   
-  <!--coordinaterules set="Special days after Easter" crosscheck="true"
-    start-date="04-30" stop-date="06-27" overlap-priority="0">
-    <query-set set="Special days after Easter"/>
-  </coordinaterules-->
-
   <liturgicalday>
     <template>
      <name>Ascension of the Lord</name>
@@ -802,26 +661,6 @@
      ORDINARY BEFORE EASTER 
                             -->  
   
-  <!--coordinaterules set="Ordinary before Easter" startafter="Feast of the Baptism of the Lord" stopbefore="Ash Wednesday"
-    start-date="01-09" stop-date="03-16" overlap-priority="2">
-    <text>X</text>
-    <format template="00">
-      <count-weeks-between>
-        <weeks-before nr="1">
-          <weekday-after day="Sunday">
-            <date day="6" month="1"/>
-          </weekday-after>
-        </weeks-before>
-        <weekday-before-or-self day="Sunday">
-          <this-date/>
-        </weekday-before-or-self>
-      </count-weeks-between>
-    </format>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
-  
   <liturgicalday>
     <parameters>
       <parametergroup><nr_s>Second</nr_s><nr_i>1</nr_i><nr_c>02</nr_c></parametergroup>
@@ -902,24 +741,6 @@
        ORDINARY AFTER EASTER 
                               -->  
   
-  <!--coordinaterules set="Ordinary after Easter" startafter="Pentecost" stop="Christ the King"
-    start-date="05-11" stop-date="12-01" overlap-priority="5">
-    <text>Y</text>
-    <format template="00">
-      <count-weeks-between>
-        <weeks-before nr="35">
-          <relative-to-next-years name="First Sunday of Advent"/>
-        </weeks-before>
-        <weekday-before-or-self day="Sunday">
-          <this-date/>
-        </weekday-before-or-self>
-      </count-weeks-between>
-    </format>
-    <day-number>
-      <this-date/>
-    </day-number>
-  </coordinaterules-->
-  
   <liturgicalday>
     <parameters>
       <parametergroup><nr_s>Sixth</nr_s><nr_i>5</nr_i><nr_c>06</nr_c></parametergroup>
@@ -962,7 +783,7 @@
       <color>green</color>
       <daterules>
         <weeks-after nr="$nr_i">
-          <weeks-before nr="35">
+          <weeks-before nr="34">
             <relative-to-next-years name="First Sunday of Advent"/>
           </weeks-before>
         </weeks-after>
@@ -1021,7 +842,7 @@
       <daterules>
         <weekday-after day="$day_s">
           <weeks-after nr="$nr_i">
-            <weeks-before nr="35">
+            <weeks-before nr="34">
               <relative-to-next-years name="First Sunday of Advent"/>
             </weeks-before>
           </weeks-after>
@@ -1048,113 +869,9 @@
     </template>
   </liturgicalday>
 
-<!-- 
-     TRANSFERRED ANNUNCIATION
-                              -->
-
-  <!--coordinaterules set="Transferred Annunciation"
-    start-date="02-09" stop-date="05-03" overlap-priority="0">
-    <query-set set="Transferred Annunciation"/>
-  </coordinaterules-->
-
-  <!--liturgicalday>
-    <template>
-      <name>Annunciation</name>
-      <season>Lent</season>
-      <set>Transferred Annunciation</set>
-      <coordinates>Z0325</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <color>white</color>
-      <daterules>
-        <if>
-          <test>
-            <equals>
-              <date day="25" month="3"/>
-              <relative-to name="Passion Sunday"/>
-            </equals>
-          </test>
-          <then>
-            <day-before day="Saturday">
-              <relative-to name="Passion Sunday"/>
-            </day-before>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday>
-
-  <liturgicalday>
-    <template>
-      <name>Annunciation</name>
-      <season>Easter</season>
-      <set>Transferred Annunciation</set>
-      <coordinates>Z0325</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <color>white</color>
-      <daterules>
-        <if>
-          <test>
-            <or>
-              <matches>
-                <coordinates set="Lent" day="25" month="3"/>
-                <string>L061,L062,L063,L064</string>
-              </matches>
-              <matches>
-                <coordinates set="Easter" day="25" month="3"/>
-                <string>P005,P006,P007,P011,P012,P013,P014,P015,P016,P017</string>
-              </matches>
-            </or>
-          </test>
-          <then>
-            <day-after day="Monday">
-              <weeks-after nr="1">
-                <easterdate/>
-              </weeks-after>
-            </day-after>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday>
-
-  <liturgicalday>
-    <template>
-      <name>Annunciation</name>
-      <season>Lent</season>
-      <set>Transferred Annunciation</set>
-      <coordinates>Z0325</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <color>white</color>
-      <daterules>
-        <if>
-          <test>
-            <matches>
-              <coordinates set="Lent" day="25" month="3"/>
-              <string>L011,L021,L031,L041,L051</string>
-            </matches>
-          </test>
-          <then>
-            <date day="26" month="03"/>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday-->
-
   <!-- 
        TRANSFERRED IMMACULATE CONCEPTION
                                          -->
-  <!--coordinaterules set="Transferred Immaculate Conception"
-    start-date="12-09" stop-date="12-09" overlap-priority="0">
-    <query-set set="Transferred Immaculate Conception"/>
-  </coordinaterules-->
-
   <!--liturgicalday>
     <parameters>
       <parametergroup><nr_c>02</nr_c></parametergroup>
@@ -1185,88 +902,10 @@
     </template>
   </liturgicalday-->
 
-  <!-- 
-       TRANSFERRED JOSEPH 
-                          -->
-                          
-  <!--coordinaterules set="Transferred Joseph"
-    start-date="02-09" stop-date="05-03" overlap-priority="0">
-    <query-set set="Transferred Joseph"/>
-  </coordinaterules-->
-
-  <!--liturgicalday>
-    <template>
-      <name>Joseph, husband of Mary</name>
-      <season>Lent</season>
-      <set>Transferred Joseph</set>
-      <coordinates>Z0319</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <color>white</color>
-      <daterules>
-        <if>
-          <test>
-            <or>
-              <matches>
-                <coordinates set="Lent" day="19" month="3"/>
-                <string>L061,L062,L063,L064</string>
-              </matches>
-              <matches>
-                <coordinates set="Easter" day="19" month="3"/>
-                <string>P005,P006,P007,P011,P012,P013,P014,P015,P016,P017</string>
-              </matches>
-            </or>
-          </test>
-          <then>
-            <day-before day="Saturday">
-              <relative-to name="Passion Sunday"/>
-            </day-before>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday>
-
-  <liturgicalday>
-    <template>
-      <name>Joseph, husband of Mary</name>
-      <season>Lent</season>
-      <set>Transferred Joseph</set>
-      <coordinates>Z0319</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <color>white</color>
-      <daterules>
-        <if>
-          <test>
-            <matches>
-              <coordinates set="Lent" day="19" month="3"/>
-              <string>L011,L021,L031,L041,L051</string>
-            </matches>
-          </test>
-          <then>
-            <date day="20" month="03"/>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday-->
-  
   <!--
       FIXED DATES 
                   -->
   
-  <!--coordinaterules set="Fixed dates" start-date="01-01" stop-date="12-31" overlap-priority="0">
-    <query-coordinates set="Fixed dates">
-      <text>Z</text>
-      <mmdd>
-        <this-date/>
-      </mmdd>
-    </query-coordinates>
-  </coordinaterules-->
- 
   <liturgicalday>
     <template>
       <name>Immaculate Conception</name>
@@ -1388,47 +1027,37 @@
       <precedence>3</precedence>
       <color>white</color>
       <daterules>
-        <!--if>
-          <not/>
-          <test>
-            <exists>
-	      <query-coordinates anydate="true" set="Transferred Annunciation">
-		<text>Z0325</text>
-	      </query-coordinates>
-            </exists>
-          </test>
-          <then-->
-            <date day="25" month="3"/>
-          <!--/then>
-        </if-->
-      </daterules>
+		<if>
+		  <test>
+		    <equals>
+		      <date day="25" month="3"/>
+		      <relative-to name="Passion Sunday"/>
+		    </equals>
+		  </test>
+		  <then>
+		    <date day="24" month="3"/><!-- Saturday before -->
+		  </then>
+		  <else>
+		    <if>
+		      <test>
+		        <between>
+		          <relative-to name="Passion Sunday"/>
+		          <date day="25" month="3"/>
+		          <relative-to name="Monday in the Second Week of Easter"/>
+		        </between>
+		      </test>
+		      <then>
+		        <relative-to name="Monday in the Second Week of Easter"/>
+		      </then>
+	          <else>
+	            <date day="25" month="3"/>
+	          </else>
+		    </if>
+		  </else>
+	    </if>
+	  </daterules>
     </template>
   </liturgicalday>
-
-  <!--liturgicalday>
-    <template>
-      <name>Annunciation</name>
-      <season>Easter</season>
-      <set>Fixed dates</set>
-      <coordinates>Z0325</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <daterules>
-        <if>
-          <test>
-            <before>
-              <relative-to name="Wednesday in the Holy Week"/>
-              <date day="25" month="3"/>
-            </before>
-          </test>
-          <then>
-            <date day="25" month="3"/>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday-->
 
   <liturgicalday>
     <template>
@@ -1440,48 +1069,25 @@
       <vigil>true</vigil>
       <precedence>3</precedence>
       <color>white</color>
-      <daterules>
-        <!--if>
-          <not/>
-          <test>
-            <exists>
-	      <query-coordinates anydate="true" set="Transferred Joseph">
-		<text>Z0319</text>
-	      </query-coordinates>
-            </exists>
-          </test>
-          <then-->
-            <date day="19" month="3"/>
-          <!--/then>
-        </if-->
-      </daterules>
+	  <daterules>
+	      <if>
+	        <test>
+	          <between>
+	            <relative-to name="Saturday in the Fifth Week of Lent"/><!-- day before Passion Sunday -->
+	            <date day="25" month="3"/>
+	            <relative-to name="Monday in the Second Week of Easter"/>
+	          </between>
+	        </test>
+	        <then>
+	          <relative-to name="Saturday in the Fifth Week of Lent"/>
+	        </then>
+	        <else>
+	          <date day="19" month="3"/>
+	        </else>
+	      </if>
+	  </daterules>
     </template>
   </liturgicalday>
-
-  <!--liturgicalday>
-    <template>
-      <name>Joseph, husband of Mary</name>
-      <season>Easter</season>
-      <set>Fixed dates</set>
-      <coordinates>Z0319</coordinates>
-      <rank nr="6">Fixed Solemnity</rank>
-      <vigil>true</vigil>
-      <precedence>3</precedence>
-      <daterules>
-        <if>
-          <test>
-            <before>
-              <relative-to name="Wednesday in the Holy Week"/>
-              <date day="19" month="3"/>
-            </before>
-          </test>
-          <then>
-            <date day="19" month="3"/>
-          </then>
-        </if>
-      </daterules>
-    </template>
-  </liturgicalday-->
 
   <liturgicalday>
     <parameters><!-- Solemnities between 1/01 and 27/11 -->
@@ -1578,15 +1184,6 @@
   </liturgicalday>
   
   <!-- DUPLICATE FIXED DATES -->  
-  <!--coordinaterules set="Duplicate fixed dates" start-date="11-27" stop-date="12-03" overlap-priority="0">
-    <query-coordinates set="Duplicate fixed dates">
-      <text>Z</text>
-      <mmdd>
-        <this-date/>
-      </mmdd>
-      <text>+</text>
-    </query-coordinates>
-  </coordinaterules-->
  
   <liturgicalday>
     <template>

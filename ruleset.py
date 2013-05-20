@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as ET
 from datetime import date 
 from datetime import timedelta
+import logging
+
+logging.basicConfig(level=logging.WARNING)
 
 class Ruleset:
 
@@ -31,6 +34,7 @@ class Ruleset:
                 'rankvalue' : int(liturgical_day.find('rank').get('nr')),
                 'vigil' : liturgical_day.findtext('vigil'),
                 'precedence' : int(liturgical_day.findtext('precedence')),
+                'coincideswith' : liturgical_day.findtext('coincideswith'),
                 'color' : liturgical_day.findtext('color')
             }
             liturgical_day_obj.daterules = liturgical_day.find('daterules')
@@ -47,29 +51,27 @@ class Options:
     years = [2013,2014,2015,2016]
         
 class Calendar:
-    """ use a ruleset to compose the liturgical calendar for a series of liturgical years """
+    """ use a ruleset to compose the liturgical calendar for a single liturgical years """
         
-    def __init__(self,ruleset,options):
+    def __init__(self,ruleset,year,language):
         self.ruleset = ruleset
-        self.options = options
+        self.year = year
+        self.language = language
+        # initialize the dict of liturgical days
         self.liturgical_days = self.ruleset.get_liturgical_days_as_dictionary()
         for coordinates in self.liturgical_days.keys():
             self.liturgical_days[coordinates].set_calendar(self)
+        # initialize the dict of days 
         self.days = {}
-        for year in self.options.years:
-            for date in Library.all_days_of_liturgical_year(year):
-                self.days[date] = Day(date,year)
-                self.days[date].set_calendar(self)
+        for date in Library.all_days_of_liturgical_year(self.year):
+            self.days[date] = Day(date,self.year)
+            self.days[date].set_calendar(self)
                 
     def populate(self):
-        """ populate the complete calendar """
-        for year in self.options.years:
-            self.populate_year(year)
-            
-    def populate_year(self,year):
-        """ populate all liturgical days for all subsets for a single year """
-        daterules_evaluator = Evaluate_daterules(self,year)
-        for coordinates in self.liturgical_days.keys():
+        """ populate all liturgical days for all subsets """
+        daterules_evaluator = Evaluate_daterules(self,self.year)
+        # iterate the liturgica days and evaluate their daterules
+        for coordinates in self.liturgical_days:
             self.evaluate_daterules(daterules_evaluator,coordinates)
 
     def evaluate_daterules(self,daterules_evaluator,coordinates):
@@ -81,30 +83,63 @@ class Calendar:
             - no circular calls are made """
         year = daterules_evaluator.year
         liturgical_day = self.liturgical_days[coordinates]
-        if year in liturgical_day.state: 
-            if liturgical_day.state[year] == "evaluating":
-                raise NameError("Circular call of evaluate_daterules")
-            elif liturgical_day.state[year] == "evaluated":
-                return liturgical_day.days[year].date
+        if liturgical_day.state == "evaluating":
+            raise NameError("Circular call of evaluate_daterules")
+        elif liturgical_day.state == "evaluated":
+            return liturgical_day.day.date
         else:
-            liturgical_day.state[year] = "evaluating"
+            logging.info("Evaluating " + liturgical_day.coordinates)
+            liturgical_day.state = "evaluating"
             date = daterules_evaluator.evaluate_daterules(liturgical_day.daterules)
-            liturgical_day.state[year] = "evaluated"
-            self.link(liturgical_day, self.days[date])
+            liturgical_day.state = "evaluated"
+            logging.info("Evaluated " + liturgical_day.coordinates + " to fall on " + date.strftime('%x'))
+            if date in self.days:
+                self.link(liturgical_day, self.days[date])
             return date
 
+    def consolidate(self):
+        """ find dates with overlapping liturgical days and
+            find the liturgical day with the highest precedence and
+            if there's a liturgical day with a lower precedence that is transferrable
+            try to transfer it"""
+        for (date,day) in self.days.items():
+            # in case only a single liturgical day matches the date
+            if len(day.liturgical_days) == 1:
+                day.actual_liturgical_day = day.liturgical_days.values()[0]
+        
     def evaluate_daterules_by_name(self,daterules_evaluator,name):
         coordinates = self.ruleset.get_coordinates_by_name(name)
         return self.evaluate_daterules(daterules_evaluator, coordinates)
 
     def link(self,liturgical_day,day):
-        """ create a mutual link between a liturgical_day and a day """
-        coordinates = liturgical_day.coordinates
+        """ create a mutual link between a liturgical_day and a day; 
+            this includes updating some interesting statistics like
+            - what's the liturgical day, linked to this day, with the 
+              highest precedence?
+            - is a liturgical day of lower precedence transferrable? 
+            - is a liturgical day of lower precedence coinciding with
+              the preceding liturgical day?"""
         subset = liturgical_day.subset
-        date = day.date
-        year = day.year
-        self.liturgical_days[coordinates].days[year] = self.days[date]
-        self.days[date].liturgical_days[subset] = self.liturgical_days[coordinates]
+        liturgical_day.day = day
+        day.liturgical_days[subset] = liturgical_day
+        if not day.preceding_liturgical_day:
+            # initialize
+            day.preceding_liturgical_day = liturgical_day
+        else:
+            # compare precedence
+            if liturgical_day.precedes(day.preceding_liturgical_day):
+                # first check if the old preceding liturgical day
+                # is coinciding
+                if liturgical_day.coincides_with(day.preceding_liturgical_day):
+                    day.coinciding_liturgical_day = day.preceding_liturgical_day
+                else:
+                    # check if the old preceding liturgical day
+                    # shouldn't be transferred
+                    if day.preceding_liturgical_day.is_solemnity():
+                        day.transferrable_liturgical_day = day.preceding_liturgical_day
+                # then set the new preceding liturgical day
+                day.preceding_liturgical_day = liturgical_day
+                
 
 class Liturgical_day:
     
@@ -114,12 +149,25 @@ class Liturgical_day:
         self.subset = subset
         self.attributes = {}
         self.daterules = None
-        self.state = {} # set and gotten by Calendar.evaluate_daterules exclusively
-        self.days = {} # references to days by year
+        self.state = None # set and gotten by Calendar.evaluate_daterules exclusively
+        self.day = None
 
     def set_calendar(self,calendar):
         self.calendar = calendar
         
+    def precedes(self,other):
+        self_precedence = self.attributes['precedence']
+        other_precedence = other.attributes['precedence']
+        return self_precedence < other_precedence
+    
+    def coincides_with(self,other):
+        return self.coordinates == other.attributes['coincideswith'] \
+               or \
+               other.coordinates == self.attributes['coincideswith']
+    
+    def is_solemnity(self):
+        return self.attributes['precedence'] <= 3
+
 class Day:
     
     def __init__(self,date,year):
@@ -127,6 +175,9 @@ class Day:
         self.date = date
         self.year = year
         self.liturgical_days = {} # references to liturgical days by subset
+        self.preceding_liturgical_day = None
+        self.transferrable_liturgical_day = None
+        self.coinciding_liturgical_day = None
     
     def set_calendar(self,calendar):
         self.calendar = calendar
@@ -143,8 +194,8 @@ class Library:
         christmas = date(year - 1, 12, 25)
         days_since_sunday = timedelta(christmas.weekday() + 1)
         sunday_before_christmas = christmas - days_since_sunday
-        four_weeks = timedelta(4*7)
-        first_sunday_of_advent = sunday_before_christmas - four_weeks
+        three_weeks = timedelta(3*7)
+        first_sunday_of_advent = sunday_before_christmas - three_weeks
         return first_sunday_of_advent
 
     @staticmethod
@@ -176,6 +227,7 @@ class Evaluate_daterules:
         self.year = year
         self.easter_date = None
         self.rules = {
+            "between" : self.between,
             "date" : self.date,
             "daterules" : self.daterules,
             "days-after" : self.days_after,
@@ -195,6 +247,17 @@ class Evaluate_daterules:
             "weeks-before" : self.weeks_before
         }
         
+    def between(self,daterules):
+        # non-including !!
+        rules = daterules.findall('*')
+        firstrules = rules[0]
+        first = self.evaluate_daterules(firstrules)
+        secondrules = rules[1]
+        second = self.evaluate_daterules(secondrules)
+        thirdrules = rules[1]
+        third = self.evaluate_daterules(thirdrules)
+        return first < second and second < third
+        
     def evaluate_daterules(self,daterules):
         """ reads the element name and runs the according method 
             this method should only be called from the method in Calendar with the same name """
@@ -206,7 +269,7 @@ class Evaluate_daterules:
         day = int(daterules.get('day'))
         month = int(daterules.get('month'))
         previous_year = daterules.get('year-1')
-        year = self.year if previous_year != 'true' else self.year - 1
+        year = self.year if previous_year != 'yes' else self.year - 1
         return date(year,month,day)
         
     def daterules(self,daterules):
@@ -361,7 +424,20 @@ class Easter_dates:
 if __name__ == '__main__':
     ruleset = Ruleset()
     options = Options()
-    calendar = Calendar(ruleset,options)
+    # TODO make this an iteration over years
+    calendar = Calendar(ruleset,2013,'en')
     calendar.populate()
-    for coordinaterules in ruleset.get_list_of_subsets():
-        print(coordinaterules.attrib['set'])
+    calendar.consolidate()
+    for date in sorted(calendar.days):
+        line = date.strftime('%x') + ' : '
+        line += calendar.days[date].preceding_liturgical_day.coordinates
+        for subset in calendar.days[date].liturgical_days:
+            line += ' ' + calendar.days[date].liturgical_days[subset].coordinates + ' (' + subset + ')'
+        transfer = calendar.days[date].transferrable_liturgical_day
+        if transfer:
+            line += '; TRANSFER ' + transfer.coordinates
+        coincide = calendar.days[date].coinciding_liturgical_day
+        if coincide:
+            line += '; COINCIDES WITH ' + coincide.coordinates
+        print line
+        
