@@ -3,7 +3,7 @@ from datetime import date
 from datetime import timedelta
 import logging
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 class Ruleset:
 
@@ -311,8 +311,10 @@ class Evaluate_daterules:
         testrules = daterules.find('test/*')
         test = self.evaluate_daterules(testrules)
         if test:
+            logging.info("if_then_else -> then" + ET.tostring(testrules))
             inputrules = daterules.find('then/*')
         else:
+            logging.info("if_then_else -> else" + ET.tostring(testrules))
             inputrules = daterules.find('else/*')
         date = self.evaluate_daterules(inputrules)
         return date
