@@ -1817,7 +1817,7 @@
   
   <liturgicalday>
     <template>
-      <name>Christmas</name>
+      <name>Kerstmis</name>
       <alternativename>Nativity of the Lord</alternativename>
       <season>Christmas season</season>
       <tide>Christmas Tide</tide>
@@ -1831,7 +1831,7 @@
       </daterules>
     </template>
   </liturgicalday>
-  
+
   <liturgicalday>
     <template>
       <name>Feast of Saint Stephen, deacon and protomartyr</name>

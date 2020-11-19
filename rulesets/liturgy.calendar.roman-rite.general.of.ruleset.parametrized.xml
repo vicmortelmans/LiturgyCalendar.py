@@ -1006,7 +1006,7 @@
 			<name>$nr_s Sunday of Ordinary Time</name>
 			<season>Ordinary Time</season>
 			<set>Ordinary before Easter</set>
-			<coordinates>X$nr_c1</coordinates>
+			<coordinates>Y$nr_c1</coordinates><!-- used to be 'X'-->
 			<rank nr="8">Sunday of Ordinary Time</rank>
 			<precedence>6</precedence>
 			<vigil>true</vigil>
@@ -1108,7 +1108,7 @@
 			<name>$day_s in the $nr_s Week of Ordinary Time</name>
 			<season>Ordinary Time</season>
 			<set>Ordinary before Easter</set>
-			<coordinates>X$nr_c$day_c</coordinates>
+			<coordinates>Y$nr_c$day_c</coordinates><!-- used to be 'X'-->
 			<rank nr="13">Weekday of Ordinary Time</rank>
 			<precedence>13</precedence>
 			<color>green</color>
@@ -1275,7 +1275,7 @@
 			<name>$nr_s Sunday of Ordinary Time</name>
 			<season>Ordinary Time</season>
 			<set>Ordinary after Easter</set>
-			<coordinates>Y$nr_c1</coordinates>
+			<coordinates>Y$nr_c1-</coordinates>
 			<rank nr="8">Sunday of Ordinary Time</rank>
 			<precedence>6</precedence>
 			<vigil>true</vigil>
@@ -1468,7 +1468,7 @@
 			<name>$day_s in the $nr_s Week of Ordinary Time</name>
 			<season>Ordinary Time</season>
 			<set>Ordinary after Easter</set>
-			<coordinates>Y$nr_c$day_c</coordinates>
+			<coordinates>Y$nr_c$day_c-</coordinates>
 			<rank nr="13">Weekday of Ordinary Time</rank>
 			<precedence>13</precedence>
 			<color>green</color>
@@ -1534,8 +1534,7 @@
 	<liturgicalday>
 		<template>
 			<name>Vigil of Christmas</name>
-			<alternativename>
-			</alternativename>
+			<alternativename></alternativename>
 			<season>Christmas season</season>
 			<set>Fixed dates</set>
 			<coordinates>Z1224</coordinates>
@@ -1551,7 +1550,7 @@
 
 	<liturgicalday>
 		<template>
-			<name>Christmas</name>
+			<name>Kerstmis</name>
 			<alternativename>Nativity of the Lord</alternativename>
 			<season>Christmas season</season>
 			<set>Fixed dates</set>
@@ -1927,7 +1926,7 @@
 			<name>Feast of St. Andrew, apostle</name>
 			<season>Ordinary Time</season>
 			<set>Duplicate fixed dates</set>
-			<coordinates>Z1130+</coordinates>
+			<coordinates>Z1130-</coordinates>
 			<rank nr="9">Feast</rank>
 			<precedence>7</precedence>
 			<color>white</color>
